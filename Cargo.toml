@@ -1,0 +1,6 @@
+[package]
+name = "coinlibio-rs"
+version = "0.1.0"
+authors = ["T <shrmrf@users.noreply.github.com>"]
+
+[dependencies]
