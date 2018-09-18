@@ -70,19 +70,34 @@ impl CoinlibAuth {
     }
 }
 
+#[test]
+fn test_api_string_creation() {
+    let auth = CoinlibAuth::new("69fd5168e0847c19");
+    let api = CoinlibApi::new(&auth.unwrap()).unwrap();
+    assert_eq!(
+        api.get_call_str("BTC", "USD").unwrap(),
+        "https://coinlib.io/api/v1/coin?key=69fd5168e0847c19&pref=USD&symbol=BTC"
+    );
+}
+
 pub struct CoinlibApi {
-    call_string: String,
+    api_key: String,
 }
 
 impl CoinlibApi {
     fn new(creds: &CoinlibAuth) -> Result<(CoinlibApi), Box<Error>> {
         Ok(CoinlibApi {
-            call_string: format!(
-                "https://coinlib.io/api/v1/coin?key={key}&pref=USD&symbol={ticker}",
-                key = creds.api_key,
-                ticker = "BTC"
-            ),
+            api_key: creds.api_key.to_string(),
         })
+    }
+
+    fn get_call_str(&self, ticker: &str, currency: &str) -> Result<(String), Box<Error>> {
+        Ok(format!(
+            "https://coinlib.io/api/v1/coin?key={key}&pref={curr}&symbol={ticker}",
+            key = self.api_key.to_string(),
+            ticker = ticker.to_string(),
+            curr = currency.to_string()
+        ))
     }
 }
 
