@@ -3,6 +3,17 @@ extern crate serde_json;
 use std;
 use std::error::Error;
 
+enum Endpoint {
+    Global,
+    Coinlist,
+    Coin,
+}
+
+struct EndpointParams {
+    currency: String,
+    symbol: String,
+}
+
 #[test]
 fn auth_init_test() {
     let auth = CoinlibAuth::new("abcdef");
@@ -31,6 +42,7 @@ fn test_api_string_creation() {
         api.get_call_str("BTC", "USD").unwrap(),
         "https://coinlib.io/api/v1/coin?key=69fd5168e0847c19&pref=USD&symbol=BTC"
     );
+    println!("{}", api.get_call_str("BTC", "USD").unwrap());
 }
 
 pub struct CoinlibApi {
@@ -42,6 +54,27 @@ impl CoinlibApi {
         Ok(CoinlibApi {
             api_key: creds.api_key.to_string(),
         })
+    }
+
+    fn request(&self, endpoint: Endpoint, params: EndpointParams) -> Result<(String), Box<Error>> {
+        let request;
+
+        // Todo: implement the URL formation as a macro!
+        match endpoint {
+            Coin => {
+                request = format!(
+                    "https://coinlib.io/api/v1/coin?key={key}&pref={curr}&symbol={ticker}",
+                    key = self.api_key.to_string(),
+                    ticker = params.symbol.to_string(),
+                    curr = params.currency.to_string()
+                )
+            }
+
+            // Todo: implement other endpoints
+            _ => request = "unimplemented".to_string(),
+        }
+
+        Ok(request.to_string())
     }
 
     fn get_call_str(&self, ticker: &str, currency: &str) -> Result<(String), Box<Error>> {
