@@ -61,7 +61,7 @@ impl CoinlibApi {
 
         // Todo: implement the URL formation as a macro!
         match endpoint {
-            Coin => {
+            Endpoint::Coin => {
                 request = format!(
                     "https://coinlib.io/api/v1/coin?key={key}&pref={curr}&symbol={ticker}",
                     key = self.api_key.to_string(),
