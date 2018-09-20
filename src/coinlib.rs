@@ -77,9 +77,11 @@ impl CoinlibApi {
             }
 
             // Todo: implement other endpoints
+            // Fix: return unimplemented as an error
             _ => request = "unimplemented".to_string(),
         }
 
+        // Todo: implement a call using reqwest to return json
         Ok(request.to_string())
     }
 
