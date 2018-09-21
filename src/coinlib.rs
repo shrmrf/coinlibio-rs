@@ -63,19 +63,24 @@ impl CoinlibAuth {
 
 #[test]
 fn test_api_string_creation() {
-    let auth = CoinlibAuth::new("69fd5168e0847c19");
-    let api = CoinlibApi::new(&auth.unwrap()).unwrap();
-    assert_eq!(
-        api.request(
-            Endpoint::Coin,
-            EndpointParams {
-                currency: "USD".to_string(),
-                symbol: "BTC".to_string()
-            }
-        ).unwrap(),
-        "https://coinlib.io/api/v1/coin?key=69fd5168e0847c19&pref=USD&symbol=BTC"
-    );
-    // println!("{}", api.get_call_str("BTC", "USD").unwrap());
+    match std::env::vars().find(|(name, value)| name == &"COINLIB_TOKEN".to_string()) {
+        None => panic!("export COINLIB_TOKEN=<token>"),
+        Some((_name, value)) => {
+            let auth = CoinlibAuth::new(&value);
+            let api = CoinlibApi::new(&auth.unwrap()).unwrap();
+
+            println!(
+                "{}",
+                api.request(
+                    Endpoint::Coin,
+                    EndpointParams {
+                        currency: "USD".to_string(),
+                        symbol: "BTC".to_string()
+                    }
+                ).unwrap()
+            );
+        }
+    }
 }
 
 pub struct CoinlibApi {
@@ -92,7 +97,6 @@ impl CoinlibApi {
     fn request(&self, endpoint: Endpoint, params: EndpointParams) -> Result<(String), Box<Error>> {
         let req;
 
-        // Todo: implement the URL formation as a macro!
         match endpoint {
             Endpoint::Coin => req = coinlib_url!(self.api_key, params.symbol, params.currency),
 
@@ -100,8 +104,21 @@ impl CoinlibApi {
             _ => panic!("unimplemented"),
         }
 
-        // Todo: implement a call using reqwest to return json
-        Ok(req.to_string())
+        let client;
+        match std::env::vars().find(|(name, value)| name == &"http_proxy".to_string()) {
+            None => client = reqwest::Client::new(),
+
+            Some((_name, value)) => {
+                println!("{}", value);
+                let url = reqwest::Proxy::all(&value)?;
+                client = reqwest::Client::builder().proxy(url).build()?
+            }
+        }
+
+        let mut response = client.get(&req).send()?;
+        let coin_info = response.text()?;
+
+        Ok(coin_info.to_string())
     }
 }
 
