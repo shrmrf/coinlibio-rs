@@ -3,6 +3,33 @@ extern crate serde_json;
 use std;
 use std::error::Error;
 
+macro_rules! coinlib_url {
+    ($key:expr) => {{
+        format!(
+            "https://coinlib.io/api/v1/coin?key={api_key}&pref={curr}&symbol={coin}",
+            api_key = $key,
+            curr = "USD",
+            coin = "BTC"
+        )
+    }};
+    ($key:expr, $coin:expr) => {{
+        format!(
+            "https://coinlib.io/api/v1/coin?key={api_key}&pref={curr}&symbol={coin}",
+            api_key = $key,
+            curr = "USD",
+            coin = $coin
+        )
+    }};
+    ($key:expr, $coin:expr, $currency:expr) => {{
+        format!(
+            "https://coinlib.io/api/v1/coin?key={api_key}&pref={curr}&symbol={coin}",
+            api_key = $key,
+            curr = $currency,
+            coin = $coin
+        )
+    }};
+}
+
 enum Endpoint {
     Global,
     Coinlist,
@@ -63,36 +90,19 @@ impl CoinlibApi {
     }
 
     fn request(&self, endpoint: Endpoint, params: EndpointParams) -> Result<(String), Box<Error>> {
-        let request;
+        let req;
 
         // Todo: implement the URL formation as a macro!
         match endpoint {
-            Endpoint::Coin => {
-                request = format!(
-                    "https://coinlib.io/api/v1/coin?key={key}&pref={curr}&symbol={ticker}",
-                    key = self.api_key.to_string(),
-                    ticker = params.symbol.to_string(),
-                    curr = params.currency.to_string()
-                )
-            }
+            Endpoint::Coin => req = coinlib_url!(self.api_key, params.symbol, params.currency),
 
             // Todo: implement other endpoints
-            // Fix: return unimplemented as an error
-            _ => request = "unimplemented".to_string(),
+            _ => panic!("unimplemented"),
         }
 
         // Todo: implement a call using reqwest to return json
-        Ok(request.to_string())
+        Ok(req.to_string())
     }
-
-    // fn get_call_str(&self, ticker: &str, currency: &str) -> Result<(String), Box<Error>> {
-    //     Ok(format!(
-    //         "https://coinlib.io/api/v1/coin?key={key}&pref={curr}&symbol={ticker}",
-    //         key = self.api_key.to_string(),
-    //         ticker = ticker.to_string(),
-    //         curr = currency.to_string()
-    //     ))
-    // }
 }
 
 #[derive(Debug)]
