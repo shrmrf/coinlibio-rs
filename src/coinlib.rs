@@ -30,15 +30,15 @@ macro_rules! coinlib_url {
     }};
 }
 
-enum Endpoint {
+pub enum Endpoint {
     Global,
     Coinlist,
     Coin,
 }
 
-struct EndpointParams {
-    currency: String,
-    symbol: String,
+pub struct EndpointParams {
+    pub currency: String,
+    pub symbol: String,
 }
 
 #[test]
@@ -52,7 +52,7 @@ pub struct CoinlibAuth {
 }
 
 impl CoinlibAuth {
-    fn new(key: &str) -> Result<(CoinlibAuth), Box<Error>> {
+    pub fn new(key: &str) -> Result<(CoinlibAuth), Box<Error>> {
         let coinlib_auth = CoinlibAuth {
             api_key: key.to_string(),
         };
@@ -88,13 +88,17 @@ pub struct CoinlibApi {
 }
 
 impl CoinlibApi {
-    fn new(creds: &CoinlibAuth) -> Result<(CoinlibApi), Box<Error>> {
+    pub fn new(creds: &CoinlibAuth) -> Result<(CoinlibApi), Box<Error>> {
         Ok(CoinlibApi {
             api_key: creds.api_key.to_string(),
         })
     }
 
-    fn request(&self, endpoint: Endpoint, params: EndpointParams) -> Result<(String), Box<Error>> {
+    pub fn request(
+        &self,
+        endpoint: Endpoint,
+        params: EndpointParams,
+    ) -> Result<(String), Box<Error>> {
         let req;
 
         match endpoint {
