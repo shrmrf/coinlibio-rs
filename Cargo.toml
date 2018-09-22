@@ -2,6 +2,13 @@
 name = "coinlibio"
 version = "0.1.0"
 authors = ["T <shrmrf@users.noreply.github.com>"]
+description = "Coinlib.io API example library and test"
+repository = "https://github.com/shrmrf/coinlibio-rs"
+keywords = ["cryptocurrency", "bitcoin", "coinmarketcap", "coinlib"]
+license = "MIT"
+
+[badges]
+travis-ci = { repository = "https://github.com/shrmrf/coinlibio-rs"}
 
 [dependencies]
 serde_derive = "1.0.78"
