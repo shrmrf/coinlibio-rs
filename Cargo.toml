@@ -1,5 +1,5 @@
 [package]
-name = "coinlibio-rs"
+name = "coinlibio"
 version = "0.1.0"
 authors = ["T <shrmrf@users.noreply.github.com>"]
 

@@ -30,15 +30,15 @@ macro_rules! coinlib_url {
     }};
 }
 
-enum Endpoint {
+pub enum Endpoint {
     Global,
     Coinlist,
     Coin,
 }
 
-struct EndpointParams {
-    currency: String,
-    symbol: String,
+pub struct EndpointParams {
+    pub currency: String,
+    pub symbol: String,
 }
 
 #[test]
@@ -52,7 +52,7 @@ pub struct CoinlibAuth {
 }
 
 impl CoinlibAuth {
-    fn new(key: &str) -> Result<(CoinlibAuth), Box<Error>> {
+    pub fn new(key: &str) -> Result<(CoinlibAuth), Box<Error>> {
         let coinlib_auth = CoinlibAuth {
             api_key: key.to_string(),
         };
@@ -61,40 +61,22 @@ impl CoinlibAuth {
     }
 }
 
-#[test]
-fn test_api_string_creation() {
-    match std::env::vars().find(|(name, value)| name == &"COINLIB_TOKEN".to_string()) {
-        None => panic!("export COINLIB_TOKEN=<token>"),
-        Some((_name, value)) => {
-            let auth = CoinlibAuth::new(&value);
-            let api = CoinlibApi::new(&auth.unwrap()).unwrap();
-
-            println!(
-                "{}",
-                api.request(
-                    Endpoint::Coin,
-                    EndpointParams {
-                        currency: "USD".to_string(),
-                        symbol: "BTC".to_string()
-                    }
-                ).unwrap()
-            );
-        }
-    }
-}
-
 pub struct CoinlibApi {
     api_key: String,
 }
 
 impl CoinlibApi {
-    fn new(creds: &CoinlibAuth) -> Result<(CoinlibApi), Box<Error>> {
+    pub fn new(creds: &CoinlibAuth) -> Result<(CoinlibApi), Box<Error>> {
         Ok(CoinlibApi {
             api_key: creds.api_key.to_string(),
         })
     }
 
-    fn request(&self, endpoint: Endpoint, params: EndpointParams) -> Result<(String), Box<Error>> {
+    pub fn request(
+        &self,
+        endpoint: Endpoint,
+        params: EndpointParams,
+    ) -> Result<(String), Box<Error>> {
         let req;
 
         match endpoint {
