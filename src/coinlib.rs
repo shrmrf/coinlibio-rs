@@ -1,5 +1,5 @@
 extern crate reqwest;
-extern crate serde_json;
+
 use std;
 use std::error::Error;
 
@@ -87,7 +87,7 @@ impl CoinlibApi {
         }
 
         let client;
-        match std::env::vars().find(|(name, value)| name == &"http_proxy".to_string()) {
+        match std::env::vars().find(|(name, _value)| name == &"http_proxy".to_string()) {
             None => client = reqwest::Client::new(),
 
             Some((_name, value)) => {
