@@ -3,6 +3,7 @@ extern crate coinlibio;
 use coinlibio::coinlib::{CoinlibApi, CoinlibAuth, Endpoint, EndpointParams};
 
 #[test]
+#[ignore]
 fn test_coinlib() {
     match std::env::vars().find(|(name, value)| name == &"COINLIB_TOKEN".to_string()) {
         None => panic!("export COINLIB_TOKEN=<token>"),
