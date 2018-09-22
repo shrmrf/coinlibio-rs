@@ -1,14 +1,14 @@
 [package]
 name = "coinlibio"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["T <shrmrf@users.noreply.github.com>"]
-description = "Coinlib.io API example library and test"
+description = "Coinlib.io API example library and test (my first Rust program)"
 repository = "https://github.com/shrmrf/coinlibio-rs"
 keywords = ["cryptocurrency", "bitcoin", "coinmarketcap", "coinlib"]
 license = "MIT"
 
 [badges]
-travis-ci = { repository = "https://github.com/shrmrf/coinlibio-rs"}
+travis-ci = { repository = "shrmrf/coinlibio-rs"}
 
 [dependencies]
 serde_derive = "1.0.78"
